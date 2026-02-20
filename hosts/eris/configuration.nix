@@ -1,10 +1,21 @@
-{ ... }:
+{ inputs, ... }:
 {
   imports = [
+    inputs.sops-nix.nixosModules.sops
     ./hardware.nix
     ../../modules/core.nix
+    ../../modules/tailscale.nix
     # ../../modules/k3s-server.nix
   ];
+
+  sops = {
+    defaultSopsFile = ../../secrets.yaml;
+
+    age.sshKeyPaths = [ "/etc/ssh/ssh_host_ed25519_key" ];
+
+    secrets.tailscale_client_id = { };
+    secrets.tailscale_client_secret = { };
+  };
 
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;

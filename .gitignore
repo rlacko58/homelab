@@ -18,3 +18,5 @@ node-token
 .idea/
 
 .nixos-anywhere/
+
+secrets/

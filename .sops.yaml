@@ -1,0 +1,12 @@
+keys:
+  - &pipeline     age1jyccg37m4ya4hmjynme83ye58zktx9qhagqwn8rc6zmh27s58fdsvclvu0
+  - &eris         age1jffs5j0rlvshjjt369nm0zepswypc36x5u3vkmqq05j8hr3rdeksnepxej
+  - &personal     age1t9tzynl3lvld2xagkety02s4pzfntfwtswtddnqzes07dwn7evqqzze6lf
+
+creation_rules:
+  - path_regex: secrets.yaml$
+    key_groups:
+      - age:
+        - *pipeline
+        - *eris
+        - *personal
