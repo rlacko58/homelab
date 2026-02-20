@@ -35,6 +35,7 @@
           kubectl
           fluxcd
           nixos-rebuild
+          nvd
         ];
       };
     };
