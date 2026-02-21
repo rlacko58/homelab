@@ -5,7 +5,7 @@
     ./hardware.nix
     ../../modules/core.nix
     ../../modules/tailscale.nix
-    # ../../modules/k3s-server.nix
+    ../../modules/k3s-server.nix
   ];
 
   sops = {
@@ -15,6 +15,7 @@
 
     secrets.tailscale_client_id = { };
     secrets.tailscale_client_secret = { };
+    secrets.k3s_cluster_token = { };
   };
 
   boot.loader.systemd-boot.enable = true;
@@ -22,6 +23,8 @@
 
   networking.hostName = "eris";
   system.stateVersion = "25.11";
+
+  services.resolved.enable = true;
 
   networking = {
     useDHCP = false;
@@ -65,4 +68,12 @@
     matchConfig.MACAddress = "38:05:25:36:41:58";
     linkConfig.Name = "net0";
   };
+
+  services.k3s-custom = {
+    tailscaleDomain = "blue-powan.ts.net";
+    extraSans = [
+      "k3s-api.lasz.io"
+    ];
+  };
+
 }
