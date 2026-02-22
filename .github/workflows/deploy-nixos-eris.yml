@@ -47,8 +47,10 @@ jobs:
 
       - name: Deploy to Eris
         run: |
-          nix run nixpkgs#nixos-rebuild -- switch \
-            --flake .#eris \
-            --target-host root@172.10.10.60 \
-            --build-host root@172.10.10.60 \
-            --fast
+          rsync -avz --timeout=60 --exclude '.git/' ./ root@172.10.10.60:/tmp/homelab-deploy/
+
+          ssh root@172.10.10.60 "systemd-run --property=KillMode=none --collect --wait \
+            nixos-rebuild switch \
+            --flake /tmp/homelab-deploy/#eris \
+            --fast \
+            --fallback"
