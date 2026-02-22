@@ -57,7 +57,6 @@ in
           "--kube-controller-manager-arg=bind-address=0.0.0.0"
           "--kube-scheduler-arg=bind-address=0.0.0.0"
           "--etcd-expose-metrics=true"
-          "--node-taint=CriticalAddonsOnly=true:NoExecute"
           "--service-node-port-range=1-32767"
           "--resolv-conf=/run/systemd/resolve/resolv.conf"
         ]
