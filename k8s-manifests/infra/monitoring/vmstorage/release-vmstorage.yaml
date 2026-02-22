@@ -58,7 +58,7 @@ spec:
       persistentVolume:
         enabled: true
         storageClass: "default"
-        size: 4Gi
+        size: 16Gi
       resources:
         limits: { cpu: 500m, memory: 1280Mi }
         requests: { cpu: 50m, memory: 256Mi }
