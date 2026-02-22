@@ -26,11 +26,6 @@ spec:
       enabled: true
       minAvailable: 1
 
-    podAnnotations:
-      prometheus.io/scrape: "true"
-      prometheus.io/port: "9402"
-      prometheus.io/path: "/metrics"
-
     extraArgs:
       - --acme-http01-solver-resource-limits-cpu=0.1
       - --acme-http01-solver-resource-request-cpu=10m
