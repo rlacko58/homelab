@@ -3,5 +3,3 @@ kind: Kustomization
 namespace: cnpg-system
 resources:
   - release-cert-manager.yaml
-  - cloudflare-dns01-lasz-io-secret.yaml
-  - cloudflare-dns01-lasz-io-issuer.yaml
