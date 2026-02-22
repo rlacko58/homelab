@@ -1,0 +1,16 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:best-practices"
+  ],
+  "nix": {
+    "enabled": true
+  },
+  "packageRules": [
+    {
+      "matchManagers": ["nix"],
+      "matchDepTypes": ["flake"],
+      "groupName": "Nix Flake inputs"
+    }
+  ]
+}
