@@ -1,0 +1,68 @@
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: vm-cluster
+  namespace: monitoring
+spec:
+  interval: 15m
+  chart:
+    spec:
+      chart: victoria-metrics-cluster
+      version: "0.35.0"
+      sourceRef:
+        kind: HelmRepository
+        name: victoriametrics
+        namespace: monitoring
+  values:
+    vmselect:
+      replicaCount: 1
+      horizontalPodAutoscaler:
+        enabled: true
+        maxReplicas: 2
+        minReplicas: 1
+        metrics:
+          - type: Resource
+            resource:
+              name: cpu
+              target:
+                type: Utilization
+                averageUtilization: 80
+      podDisruptionBudget:
+        enabled: true
+        maxUnavailable: 1
+      resources:
+        limits: { cpu: 250m, memory: 512Mi }
+        requests: { cpu: 50m, memory: 128Mi }
+      service:
+        annotations:
+          prometheus.io/scrape: "true"
+          prometheus.io/port: "8481"
+
+    vminsert:
+      enabled: true
+      extraArgs:
+        maxLabelsPerTimeseries: "40"
+      replicaCount: 1
+      resources:
+        limits: { cpu: 500m, memory: 512Mi }
+        requests: { cpu: 50m, memory: 128Mi }
+      service:
+        annotations:
+          prometheus.io/scrape: "true"
+          prometheus.io/port: "8480"
+
+    vmstorage:
+      enabled: true
+      replicaCount: 1
+      retentionPeriod: "30d"
+      persistentVolume:
+        enabled: true
+        storageClass: "default"
+        size: 4Gi
+      resources:
+        limits: { cpu: 500m, memory: 1280Mi }
+        requests: { cpu: 50m, memory: 256Mi }
+      service:
+        annotations:
+          prometheus.io/scrape: "true"
+          prometheus.io/port: "8482"

@@ -1,0 +1,30 @@
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: tns-csi
+  namespace: kube-system
+spec:
+  interval: 1h
+  chart:
+    spec:
+      chart: tns-csi-driver
+      version: "0.11.0"
+      sourceRef:
+        kind: HelmRepository
+        name: tns-csi-repo
+  values:
+    truenas:
+      # Chart logic: if existingSecret is defined, it ignores 'url' and 'apiKey' values
+      existingSecret: "tns-csi-truenas-api-config"
+      skipTLSVerify: true
+
+    storageClasses:
+      - name: "tns-csi-nvmeof"
+        protocol: nvmeof
+        isDefault: true
+        enabled: true
+        pool: "data"
+        parentDataset: "data/k8s/nvmeof"
+        server: "172.10.10.100"
+        commentTemplate: "{{ .PVCNamespace }}/{{ .PVCName }}"
+        reclaimPolicy: Delete

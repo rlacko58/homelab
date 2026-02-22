@@ -20,3 +20,5 @@ node-token
 .nixos-anywhere/
 
 secrets/
+
+**/*.unsealed.yaml

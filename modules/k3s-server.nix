@@ -54,6 +54,7 @@ in
           "--disable-kube-proxy"
           "--disable=traefik"
           "--disable=servicelb"
+          "--disable=local-storage"
           "--kube-controller-manager-arg=bind-address=0.0.0.0"
           "--kube-scheduler-arg=bind-address=0.0.0.0"
           "--etcd-expose-metrics=true"
