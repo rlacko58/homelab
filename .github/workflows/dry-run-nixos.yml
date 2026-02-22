@@ -1,0 +1,30 @@
+name: Dry Run NixOS (PRs)
+
+on:
+  pull_request:
+    paths:
+      - '**/*.nix'
+      - 'flake.lock'
+
+jobs:
+  dry-run:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Install Nix
+        uses: cachix/install-nix-action@v31
+        with:
+          nix_path: nixpkgs=channel:nixos-unstable
+          extra_nix_config: |
+            experimental-features = nix-command flakes
+
+      - name: Magic Nix Cache
+        uses: DeterminateSystems/magic-nix-cache-action@main
+
+      - name: Verify NixOS Configuration
+        run: |
+          nix run nixpkgs#nixos-rebuild -- build \
+            --flake .#eris \
+            --show-trace
