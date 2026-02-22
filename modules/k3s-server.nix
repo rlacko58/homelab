@@ -71,11 +71,13 @@ in
         "cilium_net"
       ];
       allowedTCPPorts = [
+        4420 # NVMe over TCP
         9100 # prometheus-node-exporter
         6443 # Kubernetes API
         2379 # etcd server client API
         2380 # etcd server peer API
         9345 # kube-vip
+        9963 # VM Scraper / K3s internal metrics
         10250 # kubelet API
       ];
       allowedUDPPorts = [
@@ -92,5 +94,11 @@ in
       "net.ipv4.conf.net0.rp_filter" = 0;
       "net.ipv4.conf.tailscale0.rp_filter" = 0;
     };
+
+    boot.kernelModules = [ "nvme-fabrics" "nvme-tcp" ];
+    environment.systemPackages = with pkgs; [ nvme-cli ];
+
+    # Enable the NVMe target/initiator discovery services
+    services.nvme.enable = true;
   };
 }
