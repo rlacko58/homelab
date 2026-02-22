@@ -14,7 +14,6 @@ spec:
         name: tns-csi-repo
   values:
     truenas:
-      # Chart logic: if existingSecret is defined, it ignores 'url' and 'apiKey' values
       existingSecret: "tns-csi-truenas-api-config"
       skipTLSVerify: true
 
