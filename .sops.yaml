@@ -13,6 +13,7 @@ creation_rules:
           - *personal
 
   - path_regex: k8s-manifests/.*\.yaml
+    encrypted_regex: ^(data|stringData)$
     key_groups:
       - age:
           - *pipeline
