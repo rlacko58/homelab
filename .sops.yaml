@@ -1,12 +1,19 @@
 keys:
-  - &pipeline     age1jyccg37m4ya4hmjynme83ye58zktx9qhagqwn8rc6zmh27s58fdsvclvu0
-  - &eris         age1jffs5j0rlvshjjt369nm0zepswypc36x5u3vkmqq05j8hr3rdeksnepxej
-  - &personal     age1t9tzynl3lvld2xagkety02s4pzfntfwtswtddnqzes07dwn7evqqzze6lf
+  - &pipeline age1jyccg37m4ya4hmjynme83ye58zktx9qhagqwn8rc6zmh27s58fdsvclvu0
+  - &eris age1jffs5j0rlvshjjt369nm0zepswypc36x5u3vkmqq05j8hr3rdeksnepxej
+  - &personal age1t9tzynl3lvld2xagkety02s4pzfntfwtswtddnqzes07dwn7evqqzze6lf
+  - &flux age1mg0cjjfnny5247jngl0hwwevyqgha3j4c6mhf5t9xucr6rl5qp2q334a22
 
 creation_rules:
   - path_regex: secrets.yaml$
     key_groups:
       - age:
-        - *pipeline
-        - *eris
-        - *personal
+          - *pipeline
+          - *eris
+          - *personal
+
+  - path_regex: k8s-manifests/.*\.yaml
+    key_groups:
+      - age:
+          - *pipeline
+          - *flux
