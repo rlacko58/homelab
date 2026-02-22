@@ -30,14 +30,14 @@ data:
 
         # Pointing to the cross-namespace FQDN of your VM Cluster
         location / {
-              proxy_set_header Host vm-cluster-vmselect.monitoring.svc.cluster.local;
+              proxy_set_header Host vm-cluster-victoria-metrics-cluster-vmselect.monitoring.svc.cluster.local;
               proxy_set_header X-Real-IP $remote_addr;
               proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
               
               # Prepend the VM Cluster tenant prefix for Lens
               rewrite ^/(.*)$ /select/0/prometheus/$1 break;
               
-              proxy_pass http://vm-cluster-vmselect.monitoring.svc.cluster.local:8481;
+              proxy_pass http://vm-cluster-victoria-metrics-cluster-vmselect.monitoring.svc.cluster.local:8481;
               proxy_read_timeout 90;
         }
       }
