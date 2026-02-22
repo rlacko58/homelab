@@ -32,32 +32,37 @@ jobs:
 
       - name: Run Diff
         run: |
-          echo "" > tmp_diff.txt
+          flux-local diff ks --path pull/k8s-manifests --path-orig master/k8s-manifests -A --skip-secrets > raw_ks.txt || true
+          flux-local diff hr --path pull/k8s-manifests --path-orig master/k8s-manifests -A --skip-secrets > raw_hr.txt || true
 
-          echo "### 🏗️ Kustomization Diffs" >> tmp_diff.txt
-          flux-local diff ks \
-            --path pull/k8s-manifests \
-            --path-orig master/k8s-manifests \
-            --all-namespaces \
-            --skip-secrets >> tmp_diff.txt || true
+          clean_diff() {
+            sed '/^[[:space:]]*$/d' "$1" | sed 's/^--- /\n--- /' > "$2"
+          }
 
-          echo -e "\n### 📦 HelmRelease Diffs" >> tmp_diff.txt
-          flux-local diff hr \
-            --path pull/k8s-manifests \
-            --path-orig master/k8s-manifests \
-            --all-namespaces \
-            --skip-secrets >> tmp_diff.txt || true
+          clean_diff raw_ks.txt clean_ks.txt
+          clean_diff raw_hr.txt clean_hr.txt
 
-          if grep -q '[+-]' tmp_diff.txt; then
-            echo "## ⛵ Flux Change Summary" > flux_diff.txt
+          echo "## ⛵ Flux Change Summary" > flux_diff.txt
+          
+          if grep -q '^[+-]' clean_ks.txt; then
+            echo "### 🏗️ Kustomization Diffs" >> flux_diff.txt
             echo '```diff' >> flux_diff.txt
-            cat tmp_diff.txt >> flux_diff.txt
-            echo '```' >> flux_diff.txt
-          else
-            echo "## ⛵ Flux Change Summary" > flux_diff.txt
-            echo "✅ No changes detected in Kustomizations or HelmReleases." >> flux_diff.txt
+            cat clean_ks.txt >> flux_diff.txt
+            echo -e '\n```\n' >> flux_diff.txt
+            HAS_CHANGES=true
           fi
 
+          if grep -q '^[+-]' clean_hr.txt; then
+            echo "### 📦 HelmRelease Diffs" >> flux_diff.txt
+            echo '```diff' >> flux_diff.txt
+            cat clean_hr.txt >> flux_diff.txt
+            echo -e '\n```' >> flux_diff.txt
+            HAS_CHANGES=true
+          fi
+
+          if [ "$HAS_CHANGES" != "true" ]; then
+            echo "✅ No changes detected in manifests or Helm values." >> flux_diff.txt
+          fi
       - name: Post Comment
         uses: mshick/add-pr-comment@v2
         with:
