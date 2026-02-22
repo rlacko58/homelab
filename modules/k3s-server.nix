@@ -77,7 +77,8 @@ in
         2379 # etcd server client API
         2380 # etcd server peer API
         9345 # kube-vip
-        9963 # VM Scraper / K3s internal metrics
+        9963 # Cilium Operator metrics
+        9964 # Cilium Envoy metrics
         10250 # kubelet API
       ];
       allowedUDPPorts = [
