@@ -1,0 +1,56 @@
+name: Flux Diff on PR
+
+on:
+  pull_request:
+    branches: [master]
+    paths:
+      - "k8s-manifests/**"
+
+permissions:
+  pull-requests: write
+  contents: read
+
+jobs:
+  flux-diff:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout PR
+        uses: actions/checkout@v4
+        with:
+          path: pull
+
+      - name: Checkout Master
+        uses: actions/checkout@v4
+        with:
+          ref: master
+          path: master
+
+      - name: Install Tools
+        run: |
+          pip install flux-local
+          curl -s https://fluxcd.io/install.sh | sudo bash
+
+      - name: Run Diff
+        run: |
+          flux-local diff ks \
+            --path pull/k8s-manifests \
+            --path-orig master/k8s-manifests \
+            --skip-secrets \
+            > tmp_diff.txt || true
+
+          if [ -s tmp_diff.txt ]; then
+            echo "## ⛵ Flux Change Summary" > flux_diff.txt
+            echo '```diff' >> flux_diff.txt
+            cat tmp_diff.txt >> flux_diff.txt
+            echo '```' >> flux_diff.txt
+          else
+            echo "## ⛵ Flux Change Summary" > flux_diff.txt
+            echo "✅ No changes detected in Flux manifests." >> flux_diff.txt
+          fi
+
+      - name: Post Comment
+        uses: mshick/add-pr-comment@v2
+        with:
+          message-id: flux-diff
+          message-path: flux_diff.txt
+          preformatted: false
