@@ -71,6 +71,7 @@ in
         "cilium_net"
       ];
       allowedTCPPorts = [
+        9100 # prometheus-node-exporter
         6443 # Kubernetes API
         2379 # etcd server client API
         2380 # etcd server peer API
