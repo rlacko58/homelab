@@ -32,20 +32,30 @@ jobs:
 
       - name: Run Diff
         run: |
+          echo "" > tmp_diff.txt
+
+          echo "### 🏗️ Kustomization Diffs" >> tmp_diff.txt
           flux-local diff ks \
             --path pull/k8s-manifests \
             --path-orig master/k8s-manifests \
-            --skip-secrets \
-            > tmp_diff.txt || true
+            --all-namespaces \
+            --skip-secrets >> tmp_diff.txt || true
 
-          if [ -s tmp_diff.txt ]; then
+          echo -e "\n### 📦 HelmRelease Diffs" >> tmp_diff.txt
+          flux-local diff hr \
+            --path pull/k8s-manifests \
+            --path-orig master/k8s-manifests \
+            --all-namespaces \
+            --skip-secrets >> tmp_diff.txt || true
+
+          if grep -q '[+-]' tmp_diff.txt; then
             echo "## ⛵ Flux Change Summary" > flux_diff.txt
             echo '```diff' >> flux_diff.txt
             cat tmp_diff.txt >> flux_diff.txt
             echo '```' >> flux_diff.txt
           else
             echo "## ⛵ Flux Change Summary" > flux_diff.txt
-            echo "✅ No changes detected in Flux manifests." >> flux_diff.txt
+            echo "✅ No changes detected in Kustomizations or HelmReleases." >> flux_diff.txt
           fi
 
       - name: Post Comment
