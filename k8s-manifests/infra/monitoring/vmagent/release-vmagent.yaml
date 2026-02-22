@@ -24,7 +24,7 @@ spec:
       promscrape.httpSDCheckInterval: "300s"
 
     remoteWrite:
-      - url: "http://vm-cluster-vminsert.monitoring.svc.cluster.local:8480/insert/0/prometheus"
+      - url: "http://vm-cluster-victoria-metrics-cluster-vminsert.monitoring.svc.cluster.local:8480/insert/0/prometheus"
 
     resources:
       limits:
