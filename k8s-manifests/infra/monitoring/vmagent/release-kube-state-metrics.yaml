@@ -13,8 +13,4 @@ spec:
       sourceRef:
         kind: HelmRepository
         name: prometheus-community
-  values:
-    service:
-      annotations:
-        prometheus.io/port: "8080"
-        prometheus.io/scrape: "true"
+  values: {}
