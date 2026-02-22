@@ -47,10 +47,14 @@ jobs:
 
       - name: Deploy to Eris
         run: |
-          rsync -avz --timeout=60 --exclude '.git/' ./ root@172.10.10.60:/tmp/homelab-deploy/
+          rsync -a --delete --exclude '.git/' ./ root@172.10.10.60:/tmp/homelab-deploy/
 
-          ssh root@172.10.10.60 "systemd-run --property=KillMode=none --collect --wait \
+          ssh root@172.10.10.60 << 'EOF'
+            set -e
+            cd /tmp/homelab-deploy
+            echo "--- Starting NixOS Rebuild ---"
             nixos-rebuild switch \
-            --flake /tmp/homelab-deploy/#eris \
-            --fast \
-            --fallback"
+              --flake .#eris \
+              --fallback \
+              --show-trace
+          EOF
