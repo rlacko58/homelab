@@ -3,3 +3,4 @@ kind: Kustomization
 namespace: ingress-nginx
 resources:
   - release-ingress-nginx.yaml
+  - lasz-io-wildcard-cert.yaml

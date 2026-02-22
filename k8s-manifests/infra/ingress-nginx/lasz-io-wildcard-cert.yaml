@@ -1,0 +1,13 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: lasz-io-wildcard-cert
+  namespace: ingress-nginx
+spec:
+  secretName: lasz-io-tls
+  commonName: "*.lasz.io"
+  dnsNames:
+    - "*.lasz.io"
+  issuerRef:
+    name: cloudflare-dns01-lasz-io
+    kind: ClusterIssuer
