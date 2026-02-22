@@ -25,3 +25,12 @@ spec:
   type: oci
   interval: 24h
   url: oci://registry-1.docker.io/bfenski
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmRepository
+metadata:
+  name: ingress-nginx
+  namespace: flux-system
+spec:
+  interval: 24h
+  url: https://kubernetes.github.io/ingress-nginx
