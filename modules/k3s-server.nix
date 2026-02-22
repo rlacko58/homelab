@@ -1,5 +1,6 @@
 {
   config,
+  pkgs,
   lib,
   ...
 }:
@@ -28,6 +29,7 @@ in
     services.k3s = {
       enable = true;
       role = "server";
+      package = pkgs.k3s_1_34;
       tokenFile = config.sops.secrets.k3s_cluster_token.path;
 
       manifests = {
