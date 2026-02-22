@@ -38,10 +38,12 @@
     usbutils
     pciutils
     fastfetch
+    smartmontools
   ];
 
   time.timeZone = "UTC";
   i18n.defaultLocale = "en_US.UTF-8";
 
   programs.bash.completion.enable = true;
+  services.smartd.enable = true;
 }
