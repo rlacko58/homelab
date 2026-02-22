@@ -97,8 +97,5 @@ in
 
     boot.kernelModules = [ "nvme-fabrics" "nvme-tcp" ];
     environment.systemPackages = with pkgs; [ nvme-cli ];
-
-    # Enable the NVMe target/initiator discovery services
-    services.nvme.enable = true;
   };
 }
