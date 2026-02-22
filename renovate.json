@@ -21,6 +21,14 @@
   },
   "packageRules": [
     {
+      "description": "Disable digest pinning to prevent YAML parsing errors for Docker images in Flux manifests",
+      "matchDatasources": [
+        "docker"
+      ],
+      "pinDigests": false
+    },
+    {
+      "description": "Group Nix Flake inputs together",
       "matchManagers": [
         "nix"
       ],
@@ -30,19 +38,28 @@
       "groupName": "Nix Flake inputs"
     },
     {
+      "description": "Treat < 1.0.0 versions as major updates (no automerge) to protect against breaking changes",
+      "matchCurrentVersion": "< 1.0.0",
+      "automerge": false,
+      "labels": [
+        "manual-verification-required"
+      ]
+    },
+    {
+      "description": "Automerge and group stable non-major updates together",
       "matchUpdateTypes": [
         "minor",
         "patch"
       ],
-      "matchCurrentVersion": "!/^0/",
+      "matchCurrentVersion": ">= 1.0.0",
       "automerge": true,
       "groupName": "non-major updates"
     },
     {
+      "description": "Apply labels to all Flux updates without hijacking the non-major automerge group",
       "matchManagers": [
         "flux"
       ],
-      "groupName": "flux dependencies",
       "addLabels": [
         "flux",
         "monitoring"
