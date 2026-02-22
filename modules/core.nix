@@ -13,6 +13,7 @@
 
   users.users.root.openssh.authorizedKeys.keys = [
     "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPpH+TNAwcmxYc5cVctH04wUU83Pba6s/AkKXOnhDn+m"
+    "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMQRgOedz/e462tl8VrOye+LqgbCTjyyyrsHDVPGSCZf github-action-ci"
   ];
 
   nix = {
