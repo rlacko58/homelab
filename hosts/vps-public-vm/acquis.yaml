@@ -1,4 +1,5 @@
 # /etc/crowdsec/acquis.yaml
+
 filenames:
   - /var/log/nginx/stream_access.log
 labels:
