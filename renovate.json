@@ -1,33 +1,52 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["config:best-practices", ":dependencyDashboard"],
+  "extends": [
+    "config:best-practices",
+    ":dependencyDashboard"
+  ],
   "nix": {
     "enabled": true
   },
   "flux": {
     "enabled": true,
-    "fileMatch": ["\\.yaml$"]
+    "managerFilePatterns": [
+      "/\\.yaml$/"
+    ]
   },
   "kustomize": {
     "enabled": true,
-    "fileMatch": ["kustomization\\.yaml$"]
+    "managerFilePatterns": [
+      "/kustomization\\.yaml$/"
+    ]
   },
   "packageRules": [
     {
-      "matchManagers": ["nix"],
-      "matchDepTypes": ["flake"],
+      "matchManagers": [
+        "nix"
+      ],
+      "matchDepTypes": [
+        "flake"
+      ],
       "groupName": "Nix Flake inputs"
     },
     {
-      "matchUpdateTypes": ["minor", "patch"],
+      "matchUpdateTypes": [
+        "minor",
+        "patch"
+      ],
       "matchCurrentVersion": "!/^0/",
       "automerge": true,
       "groupName": "non-major updates"
     },
     {
-      "matchManagers": ["flux"],
+      "matchManagers": [
+        "flux"
+      ],
       "groupName": "flux dependencies",
-      "addLabels": ["flux", "monitoring"]
+      "addLabels": [
+        "flux",
+        "monitoring"
+      ]
     }
   ]
 }
