@@ -22,6 +22,9 @@ jobs:
           extra_nix_config: |
             experimental-features = nix-command flakes
 
+      - name: Magic Nix Cache
+        uses: DeterminateSystems/magic-nix-cache-action@main
+
       - name: Connect to Tailscale
         uses: tailscale/github-action@v4
         with:
@@ -44,8 +47,8 @@ jobs:
 
       - name: Deploy to Eris
         run: |
-          # The runner now talks directly to the NUC over the Tailscale tunnel via TrueNAS
           nix run nixpkgs#nixos-rebuild -- switch \
             --flake .#eris \
             --target-host root@172.10.10.60 \
-            --build-host root@172.10.10.60
+            --build-host root@172.10.10.60 \
+            --fast
