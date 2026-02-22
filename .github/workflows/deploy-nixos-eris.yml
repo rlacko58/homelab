@@ -1,0 +1,52 @@
+name: Deploy NixOS to Eris
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - '**/*.nix'
+  workflow_dispatch: {}
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Install Nix
+        uses: cachix/install-nix-action@v31
+        with:
+          nix_path: nixpkgs=channel:nixos-unstable
+          extra_nix_config: |
+            experimental-features = nix-command flakes
+
+      - name: Connect to Tailscale
+        uses: tailscale/github-action@v4
+        with:
+          oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
+          oauth-secret: ${{ secrets.TS_OAUTH_SECRET }}
+          tags: tag:ci
+          args: --accept-routes
+
+      - name: Setup SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          
+          cat >> ~/.ssh/config <<EOF
+          Host 172.10.10.60
+            User root
+            IdentityFile ~/.ssh/id_ed25519
+            StrictHostKeyChecking accept-new
+          EOF
+
+      - name: Deploy to Eris
+        run: |
+          # The runner now talks directly to the NUC over the Tailscale tunnel via TrueNAS
+          nix run nixpkgs#nixos-rebuild -- switch \
+            --flake .#eris \
+            --target-host root@172.10.10.60 \
+            --build-host root@172.10.10.60
