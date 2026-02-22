@@ -1,0 +1,13 @@
+# /etc/crowdsec/parsers/s02-enrich/fix-nginx-stream-sni.yaml
+
+name: lasz/fix-nginx-stream-sni
+description: "Safely extract target_fqdn"
+filter: "evt.Meta.log_type == 'http_access-log'"
+onsuccess: next_stage
+nodes:
+  - grok:
+      pattern: '.* "%{DATA:tmp_host}"$'
+      expression: evt.Line.Raw
+    statics:
+      - meta: target_fqdn
+        expression: evt.Parsed.tmp_host
