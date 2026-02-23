@@ -305,12 +305,11 @@ Check PRs for automated dependency updates.
 
 ## Next Steps
 
-- **Apps**: Deploy apps in new `apps/` folder with Flux Kustomizations + HelmReleases.
-- **pluto**: Migrate monitoring & apps to production host, set up redundancy.
-- **Distributed Storage**: Multi-node NVMe-TCP or Ceph for fault tolerance.
+- **Services**: Deploy apps in new `k8s-manifests/services` folder with Flux Kustomizations + HelmReleases.
+- **pluto**: Migrate monitoring & services to production host, set up future redundancy.
+- **Backup**: Set up proper backup solution.
 - **Observability+**: Loki for logs, Grafana for dashboards.
-- **GitOps Notifications**: Slack/Discord alerts on Flux reconciliation failures.
-- **Sealed Secrets**: Migrate to Sealed Secrets or Vault for additional secret security.
+- **GitOps Notifications**: Telegram alerts on Flux reconciliation failures.
 
 ---
 
