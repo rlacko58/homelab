@@ -64,7 +64,7 @@ spec:
     - apiVersion: cert-manager.io/v1
       kind: Certificate
       name: lasz-io-wildcard-cert
-      namespace: ingress-nginx
+      namespace: cert-manager
   decryption:
     provider: sops
     secretRef:
