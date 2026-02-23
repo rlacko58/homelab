@@ -59,8 +59,13 @@ spec:
     kind: GitRepository
     name: homelab
   dependsOn:
-    - name: cert-manager-release
-  timeout: 3m0s
+    - name: cert-manager-issuer
+  timeout: 5m0s
+  healthChecks:
+    - apiVersion: cert-manager.io/v1
+      kind: Certificate
+      name: lasz-io-wildcard-cert
+      namespace: ingress-nginx
   decryption:
     provider: sops
     secretRef:
