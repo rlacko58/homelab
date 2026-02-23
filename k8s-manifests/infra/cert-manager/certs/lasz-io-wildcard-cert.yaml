@@ -8,6 +8,7 @@ spec:
   commonName: "*.lasz.io"
   dnsNames:
     - "*.lasz.io"
+    - "lasz.io"
   issuerRef:
     name: cloudflare-dns01-lasz-io
     kind: ClusterIssuer
