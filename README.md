@@ -89,7 +89,7 @@ Tailscale Mesh Network (secure, encrypted)
     ├─ ingress-nginx: HTTP(S) → services via LoadBalancer (172.10.10.11)
     ├─ Monitoring (VictoriaMetrics cluster)
     │   ├── vmagent scrapes: API, kubelet, cAdvisor, endpoints
-    │   ├── vmstorage persists metrics (30d, 16Gi)
+    │   ├── vmcluster persists metrics (30d, 16Gi)
     │   └── vmselect serves Prometheus API
     │       └── lens-metrics proxy for Lens IDE
     ├─ TrueNAS CSI: Dynamic PVC provisioning via NVMe-oF
@@ -288,8 +288,8 @@ Domains:
 Flux Kustomizations in `_sync/` have explicit dependencies to ensure proper ordering:
 ```
 cert-manager-release → cert-manager-issuer → cert-manager-certs
-monitoring-vmstorage → monitoring-vmagent
-monitoring-vmstorage → monitoring-lens-metrics
+monitoring-vmcluster → monitoring-vmagent
+monitoring-vmcluster → monitoring-lens-metrics
 ```
 
 Health checks ensure resources are ready before dependent ones reconcile.
