@@ -20,6 +20,9 @@ data:
 
       access_log /dev/stdout json_combined;
 
+      resolver kube-dns.kube-system.svc.cluster.local valid=300s;
+      resolver_timeout 5s;
+
       server {
         listen 8080;
 
@@ -30,6 +33,8 @@ data:
 
         # Pointing to the cross-namespace FQDN of your VM Cluster
         location / {
+              set $upstream vm-cluster-victoria-metrics-cluster-vmselect.monitoring.svc.cluster.local:8481;
+              
               proxy_set_header Host vm-cluster-victoria-metrics-cluster-vmselect.monitoring.svc.cluster.local;
               proxy_set_header X-Real-IP $remote_addr;
               proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
@@ -37,7 +42,9 @@ data:
               # Prepend the VM Cluster tenant prefix for Lens
               rewrite ^/(.*)$ /select/0/prometheus/$1 break;
               
-              proxy_pass http://vm-cluster-victoria-metrics-cluster-vmselect.monitoring.svc.cluster.local:8481;
+              proxy_pass http://$upstream;
+              proxy_connect_timeout 90;
+              proxy_send_timeout 90;
               proxy_read_timeout 90;
         }
       }
