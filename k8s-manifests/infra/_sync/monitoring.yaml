@@ -19,6 +19,24 @@ spec:
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
+  name: monitoring-vmlogscluster
+  namespace: flux-system
+spec:
+  interval: 5m
+  path: ./k8s-manifests/infra/monitoring/vmlogscluster
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: homelab
+  timeout: 5m0s
+  decryption:
+    provider: sops
+    secretRef:
+      name: sops-age
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
   name: monitoring-vmagent
   namespace: flux-system
 spec:
