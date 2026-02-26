@@ -61,3 +61,12 @@ metadata:
 spec:
   interval: 24h
   url: https://emberstack.github.io/helm-charts
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmRepository
+metadata:
+  name: vector
+  namespace: monitoring
+spec:
+  interval: 24h
+  url: https://helm.vector.dev

@@ -1,0 +1,94 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: vector-vlogs
+  namespace: monitoring
+spec:
+  interval: 15m
+  chart:
+    spec:
+      chart: vector
+      version: "0.30.0"
+      sourceRef:
+        kind: HelmRepository
+        name: vector
+        namespace: monitoring
+  values:
+    fullnameOverride: vector-vlogs
+
+    role: "Agent"
+
+    image:
+      repository: timberio/vector
+
+    serviceAccount:
+      create: true
+      name: vector-vlogs
+
+    rbac:
+      create: true
+
+    resources:
+      requests:
+        cpu: 200m
+        memory: 256Mi
+      limits:
+        cpu: 200m
+        memory: 256Mi
+
+    logLevel: "info"
+
+    rollWorkloadSecrets: true
+    rollWorkloadExtraObjects: true
+
+    service:
+      enabled: true
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "9090"
+
+    customConfig:
+      api:
+        enabled: true
+        address: 0.0.0.0:8686
+      data_dir: /vector-data-dir
+      sources:
+        kubernetes:
+          type: kubernetes_logs
+        vector_internal_metrics:
+          type: "internal_metrics"
+          scrape_interval_secs: 5
+      transforms:
+        filter:
+          type: filter
+          inputs:
+            - kubernetes
+          condition: |
+            (.kubernetes.pod_namespace != "kube-public" &&
+            .kubernetes.pod_namespace != "vector-sink-example" &&
+            .kubernetes.container_name != "vector")
+
+      sinks:
+        exposed_metrics:
+          type: "prometheus_exporter"
+          inputs:
+            - vector_internal_metrics
+          address: "0.0.0.0:9090"
+
+        vlogs:
+          type: "http"
+          inputs:
+            - filter
+          uri: "http://vm-logs-cluster-victoria-logs-cluster-vlinsert.monitoring.svc.cluster.local:9481/insert/jsonline?_stream_fields=kubernetes.pod_namespace,kubernetes.pod_name,kubernetes.container_name&_msg_field=message&_time_field=timestamp"
+          method: "post"
+          encoding:
+            codec: "json"
+          framing:
+            method: "newline_delimited"
+          compression: "gzip"
+          buffer:
+            type: "disk"
+            max_size: 5000000000
+            when_full: block
+          healthcheck:
+            enabled: false
