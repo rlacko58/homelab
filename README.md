@@ -16,6 +16,7 @@ This is my homelab config using Nix & Flux for a reproducible infra.
 ### Hosts
 
 - **eris**: Main K3s server (192.168.1.60, 172.10.10.60 on data VLAN). Intel NUC with NVMe over TCP support. Active test bed for new configs.
+- **ceres**: [Quartz64A](https://pine64.org/devices/quartz64_model_a/) ARM server (Rock RK3588). NixOS image built via GitHub Actions and deployed to SD card/eMMC. See [hosts/ceres/README.md](hosts/ceres/README.md) for details.
 - **pluto**: Future production host (configured but not active yet).
 - **vps-public-vm**: Debian-based public VM with Nginx TCP proxy to Tailscale ingress, Crowdsec for DDoS/brute-force protection.
 

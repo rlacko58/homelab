@@ -1,0 +1,69 @@
+name: Build Quartz64A NixOS Image
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+        with:
+          platforms: arm64
+
+      - name: Install MinIO Client
+        run: |
+          curl https://dl.min.io/client/mc/release/linux-amd64/mc \
+            --create-dirs -o $HOME/minio-binaries/mc
+          chmod +x $HOME/minio-binaries/mc
+          echo "$HOME/minio-binaries" >> $GITHUB_PATH
+
+      - name: Configure MinIO
+        run: |
+          mc alias set myminio ${{ secrets.MINIO_ENDPOINT }} \
+            ${{ secrets.MINIO_ACCESS_KEY }} ${{ secrets.MINIO_SECRET_KEY }}
+
+      - name: Download nixos-rockchip release
+        run: |
+          LATEST_RELEASE=$(curl -s https://api.github.com/repos/nabam/nixos-rockchip/releases/latest | grep "tarball_url" | cut -d '"' -f 4)
+          wget -O nixos-rockchip.tar.gz $LATEST_RELEASE
+          mkdir -p nixos-rockchip
+          tar -xzf nixos-rockchip.tar.gz -C nixos-rockchip --strip-components=1
+          git add nixos-rockchip/
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git config user.name "github-actions[bot]"
+          git commit -m "Add nixos-rockchip sources" || true
+
+      - name: Install Nix
+        uses: DeterminateSystems/nix-installer-action@v21
+        with:
+          extra-conf: |
+            experimental-features = nix-command flakes
+            max-jobs = auto
+            cores = 0
+            extra-platforms = aarch64-linux
+            extra-substituters = https://cache.nixos.org https://nabam-nixos-rockchip.cachix.org
+            extra-trusted-public-keys = cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY= nabam-nixos-rockchip.cachix.org-1:BQDltcnV8GS/G86tdvjLwLFz1WeFqSk7O9yl+DR0AVM=
+
+      - name: Build Quartz64A image
+        run: |
+          cd nixos-rockchip
+          nix build ".#Quartz64A" --impure --system aarch64-linux
+
+      - name: Prepare artifacts
+        run: |
+          cd nixos-rockchip
+          mkdir -p ../artifacts
+          cp -rL result/* ../artifacts/
+
+      - name: Upload to MinIO
+        run: |
+          mc cp -r artifacts/* "myminio/nixos-builds/quartz64a-${{ github.run_number }}/"
+          echo ""
+          echo "Build artifacts available at:"
+          echo "https://minio.lasz.io/browser/nixos-builds/quartz64a-${{ github.run_number }}"
