@@ -1,0 +1,20 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: ng-lasz-io-wildcard-cert
+  namespace: cert-manager
+spec:
+  secretName: ng-lasz-io-tls
+  commonName: "*.ng.lasz.io"
+  dnsNames:
+    - "*.ng.lasz.io"
+    - "ng.lasz.io"
+  issuerRef:
+    name: cloudflare-dns01-lasz-io
+    kind: ClusterIssuer
+  secretTemplate:
+    annotations:
+      reflector.v1.k8s.emberstack.com/reflection-allowed: "true"
+      reflector.v1.k8s.emberstack.com/reflection-allowed-namespaces: "ingress-nginx,auth"
+      reflector.v1.k8s.emberstack.com/reflection-auto-enabled: "true"
+      reflector.v1.k8s.emberstack.com/reflection-auto-namespaces: "ingress-nginx,auth"
