@@ -1,4 +1,4 @@
-{ pkgs, inputs, ... }:
+{ lib, inputs, ... }:
 {
   imports = [
     inputs.sops-nix.nixosModules.sops
@@ -46,4 +46,23 @@
     RuntimeMaxUse=64M
     RuntimeMaxFileSize=16M
   '';
+  swapDevices = [];
+  boot.kernel.sysctl = {
+    "vm.dirty_ratio" = 50;
+    "vm.dirty_background_ratio" = 10;
+    "vm.swappiness" = 0;
+  };
+  nix.gc.automatic = lib.mkForce false;
+  systemd.tmpfiles.rules = [];
+  fileSystems."/tmp" = {
+    device = "tmpfs";
+    fsType = "tmpfs";
+    options = [ "size=512M" "noatime" "nosuid" "nodev" "mode=1777" ];
+  };
+  fileSystems."/var/tmp" = {
+    device = "tmpfs";
+    fsType = "tmpfs";
+    options = [ "size=256M" "noatime" "nosuid" "nodev" "mode=1777" ];
+  };
+  fileSystems."/".options = [ "noatime" "nodiratime" ];
 }
