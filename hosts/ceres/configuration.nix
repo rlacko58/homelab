@@ -5,6 +5,7 @@
     ./hardware.nix
     ../../modules/core.nix
     ../../modules/tailscale.nix
+    ../../modules/homeassistant.nix
   ];
 
   sops = {
@@ -66,7 +67,9 @@
   fileSystems."/var/tmp" = {
     device = "tmpfs";
     fsType = "tmpfs";
-    options = [ "size=256M" "noatime" "nosuid" "nodev" "mode=1777" ];
+    options = [ "size=2048M" "noatime" "nosuid" "nodev" "mode=1777" ];
   };
   fileSystems."/".options = [ "noatime" "nodiratime" ];
+
+  networking.firewall.enable = true;
 }
