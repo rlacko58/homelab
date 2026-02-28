@@ -14,6 +14,16 @@ spec:
         name: authentik
         namespace: flux-system
   values:
+    global:
+      podSecurityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+      volumes:
+        - name: geoip-tmp
+          emptyDir: {}
+
     authentik:
       log_level: info
       existingSecret:
@@ -35,8 +45,8 @@ spec:
               - auth.ng.lasz.io
       resources:
         requests:
-          cpu: 500m
-          memory: 512Mi
+          cpu: 100m
+          memory: 256Mi
         limits:
           cpu: 1000m
           memory: 1Gi
@@ -55,8 +65,8 @@ spec:
       replicas: 1
       resources:
         requests:
-          cpu: 500m
-          memory: 512Mi
+          cpu: 100m
+          memory: 256Mi
         limits:
           cpu: 1000m
           memory: 1Gi
@@ -70,13 +80,6 @@ spec:
         capabilities:
           drop:
             - ALL
-    
-    global:
-      podSecurityContext:
-        runAsNonRoot: true
-        runAsUser: 1000
-        runAsGroup: 1000
-        fsGroup: 1000
     
     geoip:
       enabled: true
@@ -103,6 +106,9 @@ spec:
         capabilities:
           drop:
             - ALL
+      volumeMounts:
+        - name: geoip-tmp
+          mountPath: /tmp
     
     postgresql:
       enabled: true
