@@ -122,7 +122,7 @@ spec:
       primary:
         persistence:
           enabled: true
-          storageClass: "local-path"
+          storageClass: "tns-csi-nvmeof"
           size: 10Gi
         containerSecurityContext:
           runAsNonRoot: true
@@ -144,7 +144,7 @@ spec:
       master:
         persistence:
           enabled: true
-          storageClass: "local-path"
+          storageClass: "tns-csi-nvmeof"
           size: 5Gi
         containerSecurityContext:
           runAsNonRoot: true
