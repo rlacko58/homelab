@@ -18,12 +18,6 @@ spec:
       log_level: info
       existingSecret:
         secretName: authentik-secrets
-      postgresql:
-        host: "authentik-postgresql"
-        name: "authentik"
-        user: "authentik"
-      redis:
-        host: "authentik-redis-master"
     
     server:
       replicas: 1
