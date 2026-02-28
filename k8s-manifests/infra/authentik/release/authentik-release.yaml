@@ -135,28 +135,6 @@ spec:
             drop:
               - ALL
     
-    redis:
-      enabled: true
-      auth:
-        enabled: true
-        existingSecret: authentik-redis-secret
-        existingSecretPasswordKey: redis-password
-      master:
-        persistence:
-          enabled: true
-          storageClass: "tns-csi-nvmeof"
-          size: 5Gi
-        containerSecurityContext:
-          runAsNonRoot: true
-          runAsUser: 1000
-          readOnlyRootFilesystem: false
-          allowPrivilegeEscalation: false
-          seccompProfile:
-            type: RuntimeDefault
-          capabilities:
-            drop:
-              - ALL
-    
     serviceAccount:
       create: true
       annotations: {}
