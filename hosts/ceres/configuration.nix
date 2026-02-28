@@ -23,20 +23,21 @@
   networking.useDHCP = false;
   networking.enableIPv6 = false;
 
-  networking.interfaces.net0 = {
+  networking.interfaces.data0 = {
     ipv4.addresses = [
       {
-        address = "192.168.1.61";
-        prefixLength = 24;
+        address = "172.10.10.61";
+        prefixLength = 23;
       }
     ];
+    mtu = 9000;
   };
-  systemd.network.links."10-net0" = {
+  systemd.network.links."10-data0" = {
     matchConfig.MACAddress = "1a:5e:5e:ef:a8:b6";
-    linkConfig.Name = "net0";
+    linkConfig.Name = "data0";
   };
 
-  networking.defaultGateway = "192.168.1.1";
+  networking.defaultGateway = "172.10.10.1";
   networking.nameservers = [
     "1.1.1.3"
     "1.0.0.3"
@@ -88,4 +89,18 @@
   ];
 
   networking.firewall.enable = true;
+  networking.firewall.allowedTCPPorts = [
+    8123 # Home Assistant
+    9100 # Prometheus Node Exporter
+  ];
+
+  services.prometheus.exporters.node = {
+    enable = true;
+    enabledCollectors = [
+      "systemd"
+      "processes"
+      "pressure"
+    ];
+    port = 9100;
+  };
 }

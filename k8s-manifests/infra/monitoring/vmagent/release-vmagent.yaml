@@ -47,6 +47,16 @@ spec:
           static_configs:
             - targets: ["localhost:8429"]
 
+        # Scrape external node exporters
+        - job_name: "node-exporter-external"
+          honor_labels: true
+          static_configs:
+            - targets: ["172.10.10.61:9100"]
+              labels:
+                instance: "ceres"
+                job: "node-exporter"
+                kubernetes_cluster: "homelab-01"
+
         # Scrape config for API servers
         - job_name: "kubernetes-apiservers"
           honor_labels: false

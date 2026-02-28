@@ -20,8 +20,6 @@
     ];
   };
 
-  networking.firewall.allowedTCPPorts = [ 8123 ];
-
   # Backup
   services.borgbackup.jobs."homeassistant" = {
     paths = [ "/var/lib/homeassistant" ];
