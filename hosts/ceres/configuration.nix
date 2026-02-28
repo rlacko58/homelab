@@ -13,6 +13,7 @@
     age.sshKeyPaths = [ "/etc/ssh/ssh_host_ed25519_key" ];
     secrets.tailscale_client_id = { };
     secrets.tailscale_client_secret = { };
+    secrets.borg_homeassistant_repo_pw = { };
   };
 
   boot.loader.grub.enable = false;
