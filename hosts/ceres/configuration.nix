@@ -52,25 +52,40 @@
     RuntimeMaxUse=64M
     RuntimeMaxFileSize=16M
   '';
-  swapDevices = [];
+  swapDevices = [ ];
   boot.kernel.sysctl = {
     "vm.dirty_ratio" = 50;
     "vm.dirty_background_ratio" = 10;
     "vm.swappiness" = 0;
   };
   nix.gc.automatic = lib.mkForce false;
-  systemd.tmpfiles.rules = [];
+  systemd.tmpfiles.rules = [ ];
   fileSystems."/tmp" = {
     device = "tmpfs";
     fsType = "tmpfs";
-    options = [ "size=512M" "noatime" "nosuid" "nodev" "mode=1777" ];
+    options = [
+      "size=512M"
+      "noatime"
+      "nosuid"
+      "nodev"
+      "mode=1777"
+    ];
   };
   fileSystems."/var/tmp" = {
     device = "tmpfs";
     fsType = "tmpfs";
-    options = [ "size=2048M" "noatime" "nosuid" "nodev" "mode=1777" ];
+    options = [
+      "size=2048M"
+      "noatime"
+      "nosuid"
+      "nodev"
+      "mode=1777"
+    ];
   };
-  fileSystems."/".options = [ "noatime" "nodiratime" ];
+  fileSystems."/".options = [
+    "noatime"
+    "nodiratime"
+  ];
 
   networking.firewall.enable = true;
 }
