@@ -1,52 +1,60 @@
-{ pkgs, ... }:
+{ pkgs, config, lib, ... }:
 {
-
-  networking.networkmanager.enable = true;
-  services.openssh = {
-    enable = true;
-    settings = {
-      PasswordAuthentication = false;
-      KbdInteractiveAuthentication = false;
-      PermitRootLogin = "prohibit-password";
+  options = {
+    enable-smartd = lib.mkOption {
+      type = lib.types.bool;
+      default = true;
+      description = "Enable smartd daemon for SMART monitoring";
     };
   };
 
-  users.users.root.openssh.authorizedKeys.keys = [
-    "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPpH+TNAwcmxYc5cVctH04wUU83Pba6s/AkKXOnhDn+m"
-    "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMQRgOedz/e462tl8VrOye+LqgbCTjyyyrsHDVPGSCZf github-action-ci"
-  ];
+  config = {
+    networking.networkmanager.enable = true;
+    services.openssh = {
+      enable = true;
+      settings = {
+        PasswordAuthentication = false;
+        KbdInteractiveAuthentication = false;
+        PermitRootLogin = "prohibit-password";
+      };
+    };
 
-  nix = {
-    settings = {
-      auto-optimise-store = true;
-      experimental-features = [
-        "nix-command"
-        "flakes"
-      ];
+    users.users.root.openssh.authorizedKeys.keys = [
+      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPpH+TNAwcmxYc5cVctH04wUU83Pba6s/AkKXOnhDn+m"
+      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMQRgOedz/e462tl8VrOye+LqgbCTjyyyrsHDVPGSCZf github-action-ci"
+    ];
+
+    nix = {
+      settings = {
+        auto-optimise-store = true;
+        experimental-features = [
+          "nix-command"
+          "flakes"
+        ];
+      };
+      gc = {
+        automatic = true;
+        dates = "weekly";
+        options = "--delete-older-than 30d";
+      };
     };
-    gc = {
-      automatic = true;
-      dates = "weekly";
-      options = "--delete-older-than 30d";
-    };
+
+    environment.systemPackages = with pkgs; [
+      vim
+      git
+      curl
+      wget
+      htop
+      iotop
+      usbutils
+      pciutils
+      fastfetch
+    ] ++ (if config.enable-smartd then [ smartmontools ] else []);
+
+    time.timeZone = "UTC";
+    i18n.defaultLocale = "en_US.UTF-8";
+
+    programs.bash.completion.enable = true;
+    services.smartd.enable = config.enable-smartd;
   };
-
-  environment.systemPackages = with pkgs; [
-    vim
-    git
-    curl
-    wget
-    htop
-    iotop
-    usbutils
-    pciutils
-    fastfetch
-    smartmontools
-  ];
-
-  time.timeZone = "UTC";
-  i18n.defaultLocale = "en_US.UTF-8";
-
-  programs.bash.completion.enable = true;
-  services.smartd.enable = true;
 }

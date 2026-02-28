@@ -30,6 +30,15 @@
           ./hosts/eris/configuration.nix
         ];
       };
+      
+      nixosConfigurations.ceres = nixpkgs.lib.nixosSystem {
+        system = "aarch64-linux";
+        specialArgs = { inherit inputs; };
+        modules = [
+          ./hosts/ceres/configuration.nix
+        ];
+      };
+      
       devShells.${system}.default = pkgs.mkShell {
         packages = with pkgs; [
           nixd
