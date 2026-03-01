@@ -51,7 +51,7 @@ spec:
         - job_name: "node-exporter-external"
           honor_labels: true
           static_configs:
-            - targets: ["172.10.10.61:9100"]
+            - targets: ["192.168.1.61:9100"]
               labels:
                 instance: "ceres"
                 job: "node-exporter"

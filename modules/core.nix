@@ -50,6 +50,7 @@
       pciutils
       fastfetch
       borgbackup
+      ethtool
     ] ++ (if config.enable-smartd then [ smartmontools ] else []);
 
     time.timeZone = "UTC";

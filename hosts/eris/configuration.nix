@@ -63,6 +63,7 @@
   systemd.network.links."10-net0" = {
     matchConfig.MACAddress = "38:05:25:36:41:58";
     linkConfig.Name = "net0";
+    linkConfig.MTUBytes = 9000;
   };
 
   services.k3s-custom = {

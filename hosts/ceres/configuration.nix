@@ -23,21 +23,20 @@
   networking.useDHCP = false;
   networking.enableIPv6 = false;
 
-  networking.interfaces.data0 = {
+  networking.interfaces.net0 = {
     ipv4.addresses = [
       {
-        address = "172.10.10.61";
+        address = "192.168.1.61";
         prefixLength = 23;
       }
     ];
-    mtu = 9000;
   };
-  systemd.network.links."10-data0" = {
+  systemd.network.links."10-net0" = {
     matchConfig.MACAddress = "1a:5e:5e:ef:a8:b6";
-    linkConfig.Name = "data0";
+    linkConfig.Name = "net0";
   };
 
-  networking.defaultGateway = "172.10.10.1";
+  networking.defaultGateway = "192.168.1.1";
   networking.nameservers = [
     "1.1.1.3"
     "1.0.0.3"
