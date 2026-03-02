@@ -41,3 +41,18 @@ spec:
   sourceRef:
     kind: GitRepository
     name: homelab
+  dependsOn:
+    - name: flux-system
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: services
+  namespace: flux-system
+spec:
+  interval: 1m0s
+  path: ./k8s-manifests/services/_sync
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: homelab

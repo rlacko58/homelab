@@ -27,3 +27,6 @@ spec:
         server: "172.10.10.100"
         commentTemplate: "{{ .PVCNamespace }}/{{ .PVCName }}"
         reclaimPolicy: Delete
+        # Ensure on cluster recreation that the existing volumes are adopted by the new cluster
+        markAdoptable: true
+        adoptExisting: true
