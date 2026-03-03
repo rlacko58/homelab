@@ -63,7 +63,18 @@ spec:
       enabled: true
       ingress:
         main:
-          enabled: false
+          enabled: true
+          ingressClassName: nginx
+          hosts:
+            - host: immich.lasz.io
+              paths:
+                - path: "/"
+                  service:
+                    identifier: main
+          tls:
+            - secretName: lasz-io-tls
+              hosts:
+                - immich.lasz.io
 
     machine-learning:
       enabled: true

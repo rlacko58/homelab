@@ -7,7 +7,7 @@ spec:
   instances: 1
 
   storage:
-    size: 5Gi
+    size: 10Gi
 
   imageName: ghcr.io/tensorchord/cloudnative-vectorchord:16.9-0.4.3
 
@@ -15,8 +15,12 @@ spec:
     shared_preload_libraries:
       - "vchord.so"
 
+  ephemeralVolumesSizeLimit:
+    shm: 512Mi
   bootstrap:
     initdb:
+      database: immich
+      owner: immich
       # TODO: Use managed extensions (pg 18)
       postInitApplicationSQL:
         # Commands based on: https://immich.app/docs/administration/postgres-standalone/#without-superuser-permission
