@@ -35,14 +35,14 @@ spec:
         enabled: true
         ingressClassName: nginx
         hosts:
-          - auth.ng.lasz.io
+          - auth.lasz.io
         paths:
           - /
         pathType: Prefix
         tls:
-          - secretName: ng-lasz-io-tls
+          - secretName: lasz-io-tls
             hosts:
-              - auth.ng.lasz.io
+              - auth.lasz.io
       resources:
         requests:
           cpu: 100m
