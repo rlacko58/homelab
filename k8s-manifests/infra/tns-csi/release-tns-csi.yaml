@@ -12,6 +12,7 @@ spec:
       sourceRef:
         kind: HelmRepository
         name: tns-csi-repo
+        namespace: flux-system
   values:
     truenas:
       existingSecret: "tns-csi-truenas-api-config"

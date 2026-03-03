@@ -12,7 +12,7 @@ spec:
       sourceRef:
         kind: HelmRepository
         name: vector
-        namespace: monitoring
+        namespace: flux-system
   values:
     fullnameOverride: vector-vlogs
 

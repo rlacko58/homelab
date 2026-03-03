@@ -2,7 +2,7 @@ apiVersion: source.toolkit.fluxcd.io/v1
 kind: HelmRepository
 metadata:
   name: victoriametrics
-  namespace: monitoring
+  namespace: flux-system
 spec:
   interval: 24h
   url: https://victoriametrics.github.io/helm-charts/
@@ -11,7 +11,7 @@ apiVersion: source.toolkit.fluxcd.io/v1
 kind: HelmRepository
 metadata:
   name: prometheus-community
-  namespace: monitoring
+  namespace: flux-system
 spec:
   interval: 24h
   url: https://prometheus-community.github.io/helm-charts
@@ -20,7 +20,7 @@ apiVersion: source.toolkit.fluxcd.io/v1
 kind: HelmRepository
 metadata:
   name: tns-csi-repo
-  namespace: kube-system
+  namespace: flux-system
 spec:
   type: oci
   interval: 24h
@@ -66,7 +66,7 @@ apiVersion: source.toolkit.fluxcd.io/v1
 kind: HelmRepository
 metadata:
   name: vector
-  namespace: monitoring
+  namespace: flux-system
 spec:
   interval: 24h
   url: https://helm.vector.dev
@@ -79,3 +79,13 @@ metadata:
 spec:
   interval: 24h
   url: https://charts.goauthentik.io/
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmRepository
+metadata:
+  name: immich
+  namespace: flux-system
+spec:
+  type: oci
+  interval: 24h
+  url: oci://ghcr.io/immich-app/immich-charts
