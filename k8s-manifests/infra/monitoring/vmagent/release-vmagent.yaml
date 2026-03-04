@@ -12,6 +12,7 @@ spec:
       sourceRef:
         kind: HelmRepository
         name: victoriametrics
+        namespace: flux-system
   values:
     replicaCount: 1
     deployment:
