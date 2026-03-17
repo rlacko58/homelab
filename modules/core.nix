@@ -54,6 +54,7 @@
     ] ++ (if config.enable-smartd then [ smartmontools ] else []);
 
     time.timeZone = "UTC";
+    services.timesyncd.enable = true;
     i18n.defaultLocale = "en_US.UTF-8";
 
     programs.bash.completion.enable = true;
