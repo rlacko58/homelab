@@ -4,15 +4,12 @@
     inputs.sops-nix.nixosModules.sops
     ./hardware.nix
     ../../modules/core.nix
-    ../../modules/tailscale.nix
     ../../modules/homeassistant.nix
   ];
 
   sops = {
     defaultSopsFile = ../../secrets.yaml;
     age.sshKeyPaths = [ "/etc/ssh/ssh_host_ed25519_key" ];
-    secrets.tailscale_client_id = { };
-    secrets.tailscale_client_secret = { };
     secrets.borg_homeassistant_repo_pw = { };
   };
 
@@ -26,7 +23,7 @@
   networking.interfaces.net0 = {
     ipv4.addresses = [
       {
-        address = "192.168.1.61";
+        address = "172.10.10.61";
         prefixLength = 23;
       }
     ];
@@ -36,7 +33,7 @@
     linkConfig.Name = "net0";
   };
 
-  networking.defaultGateway = "192.168.1.1";
+  networking.defaultGateway = "172.10.10.1";
   networking.nameservers = [
     "1.1.1.3"
     "1.0.0.3"
