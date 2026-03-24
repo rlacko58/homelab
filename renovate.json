@@ -72,10 +72,10 @@
         "docker"
       ],
       "automerge": false,
-      "matchPackagePatterns": [
-        "immich"
-      ],
-      "groupName": "immich updates"
+      "groupName": "immich updates",
+      "matchPackageNames": [
+        "/immich/"
+      ]
     }
   ]
 }
