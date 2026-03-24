@@ -19,6 +19,13 @@
       "/kustomization\\.yaml$/"
     ]
   },
+  "helm-values": {
+    "enabled": true,
+    "managerFilePatterns": [
+      "/(^|/)values\\.ya?ml$/",
+      "/(^|/)[^/]+\\.values\\.ya?ml$/"
+    ]
+  },
   "packageRules": [
     {
       "description": "Disable digest pinning to prevent YAML parsing errors for Docker images in Flux manifests",
