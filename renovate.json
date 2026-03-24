@@ -64,6 +64,18 @@
         "flux",
         "monitoring"
       ]
+    },
+    {
+      "description": "Group immich Helm chart and image updates together",
+      "matchDatasources": [
+        "helm",
+        "docker"
+      ],
+      "automerge": false,
+      "matchPackagePatterns": [
+        "immich"
+      ],
+      "groupName": "immich updates"
     }
   ]
 }
