@@ -1,0 +1,67 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: qui
+  namespace: streaming
+  labels:
+    app: qui
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: qui
+  template:
+    metadata:
+      labels:
+        app: qui
+    spec:
+      containers:
+        - name: qui
+          image: ghcr.io/autobrr/qui:latest
+          ports:
+            - containerPort: 7476
+              name: http
+          env:
+            - name: TZ
+              value: "Etc/UTC"
+          volumeMounts:
+            - name: config
+              mountPath: /config
+              subPath: qui
+            - name: media
+              mountPath: /media
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 7476
+            initialDelaySeconds: 10
+            periodSeconds: 5
+      volumes:
+        - name: config
+          persistentVolumeClaim:
+            claimName: streaming-configs
+        - name: media
+          persistentVolumeClaim:
+            claimName: shared-media
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: qui
+  namespace: streaming
+spec:
+  type: ClusterIP
+  ports:
+    - port: 7476
+      targetPort: 7476
+      protocol: TCP
+      name: http
+  selector:
+    app: qui
