@@ -1,0 +1,120 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: qbittorrent
+  namespace: streaming
+  labels:
+    app: qbittorrent
+spec:
+  replicas: 1
+  serviceName: "qbittorrent"
+  selector:
+    matchLabels:
+      app: qbittorrent
+  template:
+    metadata:
+      labels:
+        app: qbittorrent
+    spec:
+      securityContext:
+        fsGroup: 1000
+        fsGroupChangePolicy: "OnRootMismatch"
+      
+      containers:
+        - name: gluetun
+          image: docker.io/qmcgaw/gluetun:latest
+          securityContext:
+            capabilities:
+              add: ["NET_ADMIN"]
+          env:
+            - name: TZ
+              value: "Etc/UTC"
+            - name: VPN_SERVICE_PROVIDER
+              value: "protonvpn"
+            - name: VPN_TYPE
+              value: "openvpn"
+            - name: OPENVPN_USER
+              valueFrom:
+                secretKeyRef:
+                  name: qbittorrent-vpn-credentials
+                  key: openvpn-user
+            - name: OPENVPN_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: qbittorrent-vpn-credentials
+                  key: openvpn-password
+            - name: SERVER_COUNTRIES
+              value: "Sweden,Switzerland,Norway,Netherlands,Germany"
+            - name: VPN_PORT_FORWARDING
+              value: "on"
+            - name: PORT_FORWARD_ONLY
+              value: "on"
+            - name: DOT
+              value: "on"
+            - name: DNS_PLAINTEXT_ADDRESS
+              value: "1.1.1.1"
+            - name: DNS_ADDRESS
+              value: "1.1.1.1"
+            - name: DNS_KEEP_NAMESERVER
+              value: "off" # Ignore host DNS config
+            - name: FIREWALL_OUTBOUND_SUBNETS
+              value: "10.42.0.0/16,10.43.0.0/16"
+            - name: FIREWALL_ALLOWED_SUBNETS
+              value: "10.42.0.0/16,10.43.0.0/16"
+            - name: VPN_PORT_FORWARDING_UP_COMMAND
+              value: "/bin/sh -c '/usr/bin/wget -O- --retry-connrefused --post-data \"json={\\\"listen_port\\\":{{PORTS}}}\" http://127.0.0.1:49893/api/v2/app/setPreferences 2>&1'"
+            - name: FIREWALL_INPUT_PORTS
+              value: "49893"
+          volumeMounts:
+            - name: tun-device
+              mountPath: /dev/net/tun
+            - name: configs
+              mountPath: /gluetun
+              subPath: qbit-vpn-data
+
+        # -----------------------------------------------------
+        # 2. QBITTORRENT (Main App)
+        # -----------------------------------------------------
+        - name: qbittorrent
+          image: lscr.io/linuxserver/qbittorrent:latest
+          env:
+            - name: PUID
+              value: "1000"
+            - name: PGID
+              value: "1000"
+            - name: TZ
+              value: "Etc/UTC"
+            - name: WEBUI_PORT
+              value: "49893"
+          volumeMounts:
+            - name: configs
+              mountPath: /config
+              subPath: qbit-config
+            - name: media
+              mountPath: /media
+      
+      volumes:
+        - name: tun-device
+          hostPath:
+            path: /dev/net/tun
+        - name: configs
+          persistentVolumeClaim:
+            claimName: streaming-configs
+        - name: media
+          persistentVolumeClaim:
+            claimName: shared-media
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: qbittorrent
+  namespace: streaming
+spec:
+  type: ClusterIP
+  ports:
+    - port: 49893
+      targetPort: 49893
+      protocol: TCP
+      name: webui
+  selector:
+    app: qbittorrent

@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: streaming-configs
+  namespace: streaming
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: tns-csi-nvmeof
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: shared-media
+  namespace: streaming
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: tns-csi-nvmeof
+  resources:
+    requests:
+      storage: 1Ti
