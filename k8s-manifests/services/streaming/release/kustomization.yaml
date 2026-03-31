@@ -5,9 +5,9 @@ resources:
   - namespace.yaml
   - storage
   - downloads
-  - media-automation
-  - media-automation
-  - media-automation
-  - media-server
-  - transcoding
-  - network
+  # - media-automation
+  # - media-automation
+  # - media-automation
+  # - media-server
+  # - transcoding
+  # - network
