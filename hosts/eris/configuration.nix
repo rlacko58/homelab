@@ -28,6 +28,11 @@
     interface = "net0";
   };
 
+  networking.vlans.vpn0 = {
+    id = 50;
+    interface = "net0";
+  };
+
   networking.interfaces = {
     net0 = {
       ipv4.addresses = [
@@ -47,6 +52,10 @@
         }
       ];
       mtu = 9000;
+    };
+
+    vpn0 = {
+      mtu = 1320;
     };
   };
 
