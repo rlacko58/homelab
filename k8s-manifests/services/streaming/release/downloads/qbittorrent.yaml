@@ -27,9 +27,27 @@ spec:
       dnsConfig:
         nameservers:
           - 10.128.0.1
+        searches:
+          - streaming.svc.cluster.local
+          - svc.cluster.local
+          - cluster.local
       securityContext:
         fsGroup: 1000
         fsGroupChangePolicy: "OnRootMismatch"
+
+      initContainers:
+        - name: setup-routes
+          image: busybox:1.37
+          command:
+            - sh
+            - -c
+            - |
+              GW=$(ip route | grep 'default via' | grep eth0 | awk '{print $3}')
+              ip route add 10.42.0.0/16 via $GW dev eth0
+              ip route add 10.43.0.0/16 via $GW dev eth0
+          securityContext:
+            capabilities:
+              add: ["NET_ADMIN"]
 
       containers:
         - name: qbittorrent
