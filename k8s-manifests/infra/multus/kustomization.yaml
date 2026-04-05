@@ -3,4 +3,4 @@ kind: Kustomization
 namespace: kube-system
 resources:
   - multus-thick.yaml
-  - net-attach-def-vpn0.yaml
+  - net-attach-def-vpn.yaml
