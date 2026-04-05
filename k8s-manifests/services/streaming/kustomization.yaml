@@ -3,12 +3,11 @@ kind: Kustomization
 namespace: streaming
 resources:
   - storage/pvcs.yaml
-  - downloads/qbittorrent-vpn-credentials.enc.yaml
-  - downloads/qbittorrent-vpn.yaml
+  - downloads/qbittorrent.yaml
   - downloads/qui.yaml
-  # - media-automation
-  # - media-automation
-  # - media-automation
+  - media-automation/prowlarr.yaml
+  - media-automation/radarr.yaml
+  - media-automation/sonarr.yaml
   # - media-server
   # - transcoding
   # - network
