@@ -55,6 +55,12 @@
     };
 
     vpn0 = {
+      ipv4.addresses = [
+        {
+          address = "172.10.20.2";
+          prefixLength = 23;
+        }
+      ];
       mtu = 1320;
     };
   };

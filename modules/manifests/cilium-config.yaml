@@ -31,7 +31,7 @@ spec:
 
     ipam:
       mode: "kubernetes"
-    devices: "data0,net0"
+    devices: "data0,net0,vpn0"
     directRoutingDevice: "data0"
 
     operator:
@@ -40,6 +40,9 @@ spec:
         - operator: Exists
     tolerations:
       - operator: Exists
+
+    cni:
+      exclusive: false
 
     cgroup:
       autoMount:

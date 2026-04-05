@@ -98,5 +98,25 @@ in
 
     boot.kernelModules = [ "nvme-fabrics" "nvme-tcp" ];
     environment.systemPackages = with pkgs; [ nvme-cli ];
+
+    # Install standard CNI plugins (macvlan, bridge, etc.) for Multus
+    # Must be real copies, not symlinks — Multus runs in a container and cannot
+    # follow symlinks into the host's /nix/store.
+    systemd.services.install-cni-plugins = {
+      description = "Install CNI plugins for Multus";
+      before = [ "k3s.service" ];
+      wantedBy = [ "multi-user.target" ];
+      serviceConfig = {
+        Type = "oneshot";
+        RemainAfterExit = true;
+      };
+      script = ''
+        mkdir -p /opt/cni/bin
+        cp -f ${pkgs.cni-plugins}/bin/macvlan /opt/cni/bin/macvlan
+        cp -f ${pkgs.cni-plugins}/bin/ipvlan /opt/cni/bin/ipvlan
+        cp -f ${pkgs.cni-plugins}/bin/host-local /opt/cni/bin/host-local
+        chmod 0755 /opt/cni/bin/macvlan /opt/cni/bin/ipvlan /opt/cni/bin/host-local
+      '';
+    };
   };
 }

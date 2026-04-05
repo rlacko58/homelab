@@ -1,0 +1,74 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: qbittorrent
+  namespace: streaming
+  labels:
+    app: qbittorrent
+spec:
+  replicas: 1
+  serviceName: "qbittorrent"
+  selector:
+    matchLabels:
+      app: qbittorrent
+  template:
+    metadata:
+      labels:
+        app: qbittorrent
+      annotations:
+        k8s.v1.cni.cncf.io/networks: '[{
+          "name": "vpn",
+          "namespace": "kube-system",
+          "ips": ["172.10.20.10/23"],
+          "interface": "vpn0"
+          }]'
+    spec:
+      dnsPolicy: None
+      dnsConfig:
+        nameservers:
+          - 10.128.0.1
+      securityContext:
+        fsGroup: 1000
+        fsGroupChangePolicy: "OnRootMismatch"
+
+      containers:
+        - name: qbittorrent
+          image: lscr.io/linuxserver/qbittorrent:latest
+          env:
+            - name: PUID
+              value: "1000"
+            - name: PGID
+              value: "1000"
+            - name: TZ
+              value: "Etc/UTC"
+            - name: WEBUI_PORT
+              value: "49893"
+          volumeMounts:
+            - name: configs
+              mountPath: /config
+              subPath: qbit-config
+            - name: media
+              mountPath: /media
+
+      volumes:
+        - name: configs
+          persistentVolumeClaim:
+            claimName: streaming-configs
+        - name: media
+          persistentVolumeClaim:
+            claimName: shared-media
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: qbittorrent
+  namespace: streaming
+spec:
+  type: ClusterIP
+  ports:
+    - port: 49893
+      targetPort: 49893
+      protocol: TCP
+      name: webui
+  selector:
+    app: qbittorrent
