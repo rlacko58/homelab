@@ -52,6 +52,7 @@ spec:
                   secretKeyRef:
                     name: immich-database-app
                     key: password
+              IMMICH_HELMET_FILE: true
 
     immich:
       persistence:
